@@ -1,4 +1,7 @@
-const CBuser = "grantanthony852@gmail.com";
-const CBpass = "CharlesInCharge67*12";
-  
-module.exports = { CBuser, CBpass };
+const cbUser = "grantanthony852@gmail.com";
+const cbPass = "CharlesInCharge67*12";
+
+module.exports = {
+    cbUser,
+    cbPass
+};

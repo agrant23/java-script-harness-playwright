@@ -1,14 +1,6 @@
-1  node_modules/
-2  .env
-3  test-results/
-4  playwright-report/
-5  blob-report/
-6  playwright/.cache/
-
-# Playwright
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
+test-results/
+playwright-report/
+blob-report/
+.env
+secure/creds.js

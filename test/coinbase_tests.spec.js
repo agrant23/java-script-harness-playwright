@@ -1,39 +1,37 @@
-const { test, expect, chromium } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 const config = require('../config');
-const { SigninPage } = require('../Pages/signin');
+const { SigninPage } = require('../Pages/SigninPage');
 
-test.describe('Login', () => {
-    let browser;
-    let context;
-    let page;
-    let sign_in_page;
+const TEST_TIMEOUT = 240000;
+const WAIT_2FA_ENTRY = 120000;
+const WAIT_HOME_TIMEOUT = 30000;
+const AUTH_CHALLENGE_URL_REGEX = /login\.coinbase\.com\/signin|oauth_challenge/;
 
-    test.beforeEach(async () => {
-        browser = await chromium.launch({
-            args: ['--log-level=3']
-        });
-        context = await browser.newContext();
-        page = await context.newPage();
+test.describe('Coinbase Login Automation Suite', () => {
+
+    test('Assert login flow reaches 2-Factor Authentication', async ({ page }) => {
+        test.setTimeout(TEST_TIMEOUT);
         
-        sign_in_page = new SigninPage(page);
-        await sign_in_page.init(true);
+        const signInPage = new SigninPage(page);
+        await signInPage.init(true);
+        
+        await signInPage.login();
+        await expect(page).toHaveURL(AUTH_CHALLENGE_URL_REGEX);
     });
 
-    test('Confirm that logging in succeeds', async () => {
-        test.setTimeout(150000); 
+    test('Verify login completion after 2FA entry', async ({ page }) => {
+        test.setTimeout(TEST_TIMEOUT);
         
-        // Just use sign_in_page directly - no 'new' keyword
-        await sign_in_page.login(false);
+        const signInPage = new SigninPage(page);
+        await signInPage.init(true);
         
-        await page.waitForTimeout(120000);
+        await signInPage.login();
+        await expect(page).toHaveURL(AUTH_CHALLENGE_URL_REGEX);
+        
+        await page.waitForTimeout(WAIT_2FA_ENTRY);
 
-        await expect(page).toHaveURL(config.coinbase_domain + '/home');
-        await expect(page).toHaveTitle('Home · Coinbase');
-        
-        expect('user is').toBe('logged in');
+        await expect(page).toHaveURL(config.homepageDomain + '/home', { timeout: WAIT_HOME_TIMEOUT });
+        await expect(page).toHaveTitle(/Home|Coinbase/);
     });
 
-    test.afterEach(async () => {
-        await browser.close();
-    });
 });

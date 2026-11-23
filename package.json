@@ -1,11 +1,14 @@
 {
-  "name": "my_javascript_playwrigt_harness",
+  "name": "my_javascript_playwright_harness",
   "version": "1.0.0",
-  "description": "",
-  "main": "coinbase_tests.test.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
+  "description": "Coinbase QA Automation Suite - JavaScript / Playwright Edition",
+  "main": "test/coinbase_tests.spec.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:chrome": "playwright test --project=chromium"
+  },
+  "keywords": ["playwright", "automation", "qa", "testing"],
+  "author": "Anthony Grant",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

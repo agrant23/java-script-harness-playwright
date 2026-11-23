@@ -1,4 +1,7 @@
-const coinbase_domain = "https://www.coinbase.com";
-const homepage_domain = "https://www.coinbase.com";
+const coinbaseDomain = "https://www.coinbase.com";
+const homepageDomain = "https://www.coinbase.com";
 
-module.exports = { coinbase_domain, homepage_domain };
+module.exports = {
+    coinbaseDomain,
+    homepageDomain
+};

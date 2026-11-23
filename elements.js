@@ -1,3 +1,5 @@
+const DEFAULT_TIMEOUT = 10000;
+
 class Element {
     constructor(page, locatorString) {
         this.page = page;
@@ -10,15 +12,15 @@ class Element {
 
     async element() {
         const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: 100000 });
+        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
         return loc;
     }
 
     async exists() {
         try {
-            await this.page.waitForSelector(this.locatorString, { state: 'visible', timeout: 10000 });
+            await this.page.waitForSelector(this.locatorString, { state: 'visible', timeout: DEFAULT_TIMEOUT });
             return true;
-        } catch (error) {
+        } catch {
             return false;
         }
     }
@@ -32,10 +34,10 @@ class Button extends Element {
 
     async click() {
         const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: 10000 });
+        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
         await loc.click();
         if (this.waitLocator) {
-            await this.page.waitForSelector(this.waitLocator, { state: 'visible', timeout: 10000 });
+            await this.page.waitForSelector(this.waitLocator, { state: 'visible', timeout: DEFAULT_TIMEOUT });
         }
     }
 }
@@ -43,25 +45,22 @@ class Button extends Element {
 class Link extends Element {
     async click() {
         const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: 10000 });
+        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
         await loc.click();
     }
 }
 
 class Field extends Element {
     async click() {
-        const loc = await this.element();
-        await loc.click();
+        await (await this.element()).click();
     }
 
     async input(keys) {
-        const loc = await this.element();
-        await loc.fill(keys);
+        await (await this.element()).fill(keys);
     }
 
     async clear() {
-        const loc = await this.element();
-        await loc.clear();
+        await (await this.element()).clear();
     }
 }
 
@@ -72,25 +71,22 @@ class ReactiveMenu extends Element {
     }
 
     async wrapper() {
-        await this.page.waitForSelector(this.wrapperLoc, { state: 'attached', timeout: 10000 });
+        await this.page.waitForSelector(this.wrapperLoc, { state: 'attached', timeout: DEFAULT_TIMEOUT });
         return this.page.locator(this.wrapperLoc);
     }
 
     async open() {
-        const loc = await this.element();
-        await loc.click();
+        await (await this.element()).click();
     }
 
     async select(itemSelector) {
-        const loc = await this.element();
-        await loc.click();
+        await (await this.element()).click();
 
         let item;
         if (this.wrapperLoc) {
             const wrap = await this.wrapper();
             if (typeof itemSelector === 'number') {
-                const items = wrap.locator('xpath=.//a');
-                item = items.nth(itemSelector - 1);
+                item = wrap.locator('xpath=.//a').nth(itemSelector - 1);
             } else if (typeof itemSelector === 'string') {
                 item = wrap.locator(`xpath=.//*[.='${itemSelector}']`);
             }
@@ -98,18 +94,21 @@ class ReactiveMenu extends Element {
             item = this.page.locator(`xpath=//*[.='${itemSelector}']`);
         }
 
-        const tagName = await item.evaluate(el => el.tagName.toLowerCase());
-        if (tagName !== 'a') {
-            const parent = item.locator('xpath=..');
-            const parentTagName = await parent.evaluate(el => el.tagName.toLowerCase());
-            if (parentTagName === 'a') {
-                item = parent;
+        try {
+            const tagName = await item.evaluate(el => el.tagName.toLowerCase());
+            if (tagName !== 'a') {
+                const parent = item.locator('xpath=..');
+                const parentTagName = await parent.evaluate(el => el.tagName.toLowerCase());
+                if (parentTagName === 'a') {
+                    item = parent;
+                }
             }
+        } catch {
+            // Fallback to direct click if tag evaluation fails
         }
 
         await item.click();
     }
- }
- 
- module.exports = { Element, Button, Link, Field, ReactiveMenu };
- 
+}
+
+module.exports = { Element, Button, Link, Field, ReactiveMenu };
