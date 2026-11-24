@@ -16,7 +16,6 @@ The login tests run against the live Coinbase site, so you need your own account
 1. Create a Coinbase account with your own email, password, and phone number.
 2. Copy secure/creds.template.js to secure/creds.js and fill in cbUser and cbPass.
 3. Run the tests in a visible Chrome window:
-bash
-   npm run test:chrome
+   npx playwright test coinbase_tests.spec.js
 4. Keep your phone nearby. Coinbase will send you a 2 Factor authentication code. 
-   The test waits about two minutes for you to enter it. You may also need to complete an image puzzle
+   The test waits about two minutes for you to enter it. You may also need to complete an image puzzle.
