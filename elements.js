@@ -1,5 +1,3 @@
-const DEFAULT_TIMEOUT = 10000;
-
 class Element {
     constructor(page, locatorString) {
         this.page = page;
@@ -10,57 +8,34 @@ class Element {
         return this.page.locator(this.locatorString);
     }
 
-    async element() {
-        const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
-        return loc;
-    }
-
     async exists() {
-        try {
-            await this.page.waitForSelector(this.locatorString, { state: 'visible', timeout: DEFAULT_TIMEOUT });
-            return true;
-        } catch {
-            return false;
-        }
+        return await this.locator().isVisible();
     }
 }
 
 class Button extends Element {
-    constructor(page, locatorString, waitFor = null) {
-        super(page, locatorString);
-        this.waitLocator = waitFor;
-    }
-
     async click() {
-        const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
-        await loc.click();
-        if (this.waitLocator) {
-            await this.page.waitForSelector(this.waitLocator, { state: 'visible', timeout: DEFAULT_TIMEOUT });
-        }
+        await this.locator().click();
     }
 }
 
 class Link extends Element {
     async click() {
-        const loc = this.locator();
-        await loc.waitFor({ state: 'visible', timeout: DEFAULT_TIMEOUT });
-        await loc.click();
+        await this.locator().click();
     }
 }
 
 class Field extends Element {
     async click() {
-        await (await this.element()).click();
+        await this.locator().click();
     }
 
     async input(keys) {
-        await (await this.element()).fill(keys);
+        await this.locator().fill(keys);
     }
 
     async clear() {
-        await (await this.element()).clear();
+        await this.locator().clear();
     }
 }
 
@@ -70,44 +45,20 @@ class ReactiveMenu extends Element {
         this.wrapperLoc = wrapperLocator;
     }
 
-    async wrapper() {
-        await this.page.waitForSelector(this.wrapperLoc, { state: 'attached', timeout: DEFAULT_TIMEOUT });
-        return this.page.locator(this.wrapperLoc);
-    }
-
     async open() {
-        await (await this.element()).click();
+        await this.locator().click();
     }
 
     async select(itemSelector) {
-        await (await this.element()).click();
+        await this.locator().click();
 
-        let item;
-        if (this.wrapperLoc) {
-            const wrap = await this.wrapper();
-            if (typeof itemSelector === 'number') {
-                item = wrap.locator('xpath=.//a').nth(itemSelector - 1);
-            } else if (typeof itemSelector === 'string') {
-                item = wrap.locator(`xpath=.//*[.='${itemSelector}']`);
-            }
+        const container = this.wrapperLoc ? this.page.locator(this.wrapperLoc) : this.page;
+
+        if (typeof itemSelector === 'number') {
+            await container.locator('xpath=.//a').nth(itemSelector - 1).click();
         } else {
-            item = this.page.locator(`xpath=//*[.='${itemSelector}']`);
+            await container.locator(`text=${itemSelector}`).click();
         }
-
-        try {
-            const tagName = await item.evaluate(el => el.tagName.toLowerCase());
-            if (tagName !== 'a') {
-                const parent = item.locator('xpath=..');
-                const parentTagName = await parent.evaluate(el => el.tagName.toLowerCase());
-                if (parentTagName === 'a') {
-                    item = parent;
-                }
-            }
-        } catch {
-            // Fallback to direct click if tag evaluation fails
-        }
-
-        await item.click();
     }
 }
 

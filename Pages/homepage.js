@@ -6,7 +6,7 @@ class HomePage {
     }
 
     async init() {
-        await this.page.goto(config.homepageDomain);
+        await this.page.goto(config.coinbaseDomain);
         return this;
     }
 }

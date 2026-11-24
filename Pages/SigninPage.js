@@ -4,8 +4,8 @@ const { Element, Button, Link, Field, ReactiveMenu } = require('../elements');
 
 const EMAIL_FIELD_LOCATOR = 'input[type="email"]';
 const PASS_FIELD_LOCATOR = '#current-password';
-const CONTINUE_EMAIL_LOCATOR = "xpath=//*[@id='two-factor']//button[@data-testid='email-submit-button']";
-const CONTINUE_PASS_LOCATOR = "xpath=//*[@data-testid='password-submit-button']";
+const CONTINUE_EMAIL_LOCATOR = '#two-factor [data-testid="email-submit-button"]';
+const CONTINUE_PASS_LOCATOR = '[data-testid="password-submit-button"]';
 const SIGNIN_BUTTON_LOCATOR = '#signin_button';
 const STAY_SIGNED_IN_LOCATOR = '#stay_signed_in';
 const ERROR_ALERT_LOCATOR = '.alert';

@@ -1,14 +1,15 @@
 const { test, expect } = require('@playwright/test');
-const config = require('../config');
 const { SigninPage } = require('../Pages/SigninPage');
 
 const TEST_TIMEOUT = 240000;
+const WAIT_2FA_TIMEOUT = 120000;
+const WAIT_HOME_TIMEOUT = 30000;
 const AUTH_CHALLENGE_URL_REGEX = /login\.coinbase\.com\/signin|oauth_challenge/;
 const HOME_URL_REGEX = /.*coinbase\.com\/(home|dashboard)(\/|\?|$).*/;
 
 test.describe('Coinbase Login Automation Suite', () => {
 
-    test('Assert login flow reaches 2-Factor Authentication', async ({ page }) => {
+    test('Confirm that logging in reached 2-Factor Authentication', async ({ page }) => {
         test.setTimeout(TEST_TIMEOUT);
         
         const signInPage = new SigninPage(page);
@@ -18,7 +19,7 @@ test.describe('Coinbase Login Automation Suite', () => {
         await expect(page).toHaveURL(AUTH_CHALLENGE_URL_REGEX);
     });
 
-    test('Verify login completion after 2FA entry', async ({ page }) => {
+    test('Confirm that logging in succeeds', async ({ page }) => {
         test.setTimeout(TEST_TIMEOUT);
         
         const signInPage = new SigninPage(page);
@@ -27,9 +28,8 @@ test.describe('Coinbase Login Automation Suite', () => {
         await signInPage.login();
         await expect(page).toHaveURL(AUTH_CHALLENGE_URL_REGEX);
         
-        // Dynamic wait: Automatically resolves the moment Coinbase completes 2FA redirect to /home
-        await page.waitForURL(HOME_URL_REGEX, { timeout: 120000 });
-        await expect(page).toHaveTitle(/Home|Coinbase/, { timeout: 30000 });
+        await page.waitForURL(HOME_URL_REGEX, { timeout: WAIT_2FA_TIMEOUT });
+        await expect(page).toHaveTitle(/Home|Coinbase/, { timeout: WAIT_HOME_TIMEOUT });
     });
 
 });
