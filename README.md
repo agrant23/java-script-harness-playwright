@@ -19,3 +19,7 @@ The login tests run against the live Coinbase site, so you need your own account
    npx playwright test coinbase_tests.spec.js
 4. Keep your phone nearby. Coinbase will send you a 2 Factor authentication code. 
    The test waits about two minutes for you to enter it. You may also need to complete an image puzzle.
+
+
+Acknowledgment of this project:
+I used AI assistance (openclaw) for parts of the port; I reviewed the code (learned the code) and validated it by running the test suite.
