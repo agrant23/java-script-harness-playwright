@@ -13,32 +13,6 @@ class Element {
     }
 }
 
-class Button extends Element {
-    async click() {
-        await this.locator().click();
-    }
-}
-
-class Link extends Element {
-    async click() {
-        await this.locator().click();
-    }
-}
-
-class Field extends Element {
-    async click() {
-        await this.locator().click();
-    }
-
-    async input(keys) {
-        await this.locator().fill(keys);
-    }
-
-    async clear() {
-        await this.locator().clear();
-    }
-}
-
 class ReactiveMenu extends Element {
     constructor(page, locatorString, wrapperLocator = null) {
         super(page, locatorString);
@@ -62,4 +36,4 @@ class ReactiveMenu extends Element {
     }
 }
 
-module.exports = { Element, Button, Link, Field, ReactiveMenu };
+module.exports = { Element, ReactiveMenu };
