@@ -22,4 +22,4 @@ The login tests run against the live Coinbase site, so you need your own account
 
 
 Acknowledgment of this project:
-I used AI assistance (openclaw) for parts of the port; I reviewed the code (learned the code) and validated it by running the test suite.
+I used LLMs to port my Python Selenium repository to JavaScript Playwright. As I used agentic AI technology to review, debug, and optimize the code, I improved my OpenClaw agent's ability to consistently generate code in the same style, modularity, and format. This test suite currently passes. I reviewed the code and understand it fully. I'm confident I can quickly create tests in this language and framework.

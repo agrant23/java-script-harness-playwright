@@ -5,9 +5,8 @@ class HomePage {
         this.page = page;
     }
 
-    async init() {
+    async goto() {
         await this.page.goto(config.coinbaseDomain);
-        return this;
     }
 }
 

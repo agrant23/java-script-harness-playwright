@@ -35,11 +35,8 @@ class SigninPage {
         this.signInErrorAlert = this.page.locator(ERROR_ALERT_LOCATOR);
     }
 
-    async init(spawn = false) {
-        if (spawn) {
-            await this.page.goto(config.coinbaseDomain + '/signin');
-        }
-        return this;
+    async goto() {
+        await this.page.goto(config.coinbaseDomain + '/signin');
     }
 
     async login() {

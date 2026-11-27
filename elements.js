@@ -1,4 +1,4 @@
-class Element {
+class BaseElement {
     constructor(page, locatorString) {
         this.page = page;
         this.locatorString = locatorString;
@@ -13,7 +13,7 @@ class Element {
     }
 }
 
-class ReactiveMenu extends Element {
+class ReactiveMenu extends BaseElement {
     constructor(page, locatorString, wrapperLocator = null) {
         super(page, locatorString);
         this.wrapperLoc = wrapperLocator;
@@ -36,4 +36,4 @@ class ReactiveMenu extends Element {
     }
 }
 
-module.exports = { Element, ReactiveMenu };
+module.exports = { BaseElement, ReactiveMenu };
